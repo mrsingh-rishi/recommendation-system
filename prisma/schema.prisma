@@ -53,6 +53,7 @@ model Category {
 
   vendorCategories  VendorCategory[]
   workRequirements  WorkRequirement[]
+  vendorRanks       VendorRank[]
 
   @@map("category")
 }
@@ -71,11 +72,12 @@ model Vendor {
   createdAt      DateTime     @default(now()) @map("created_at")
   updatedAt      DateTime     @updatedAt @map("updated_at")
 
-  categories  VendorCategory[]
-  locations   VendorLocation[]
-  documents   VendorDocument[]
-  ratings     VendorRating[]
+  categories      VendorCategory[]
+  locations       VendorLocation[]
+  documents       VendorDocument[]
+  ratings         VendorRating[]
   recommendations Recommendation[]
+  ranks           VendorRank[]
 
   @@map("vendor")
 }
@@ -170,6 +172,24 @@ model VendorRating {
   @@unique([vendorId, workRequirementId])
   @@index([vendorId])
   @@map("vendor_rating")
+}
+
+// ============================================
+// Vendor Ranks (recalculated on every new rating)
+// ============================================
+model VendorRank {
+  id         Int      @id @default(autoincrement())
+  vendorId   Int      @map("vendor_id")
+  categoryId Int      @map("category_id")
+  rankValue  Decimal  @map("rank_value") @db.Decimal(5, 2)
+  updatedAt  DateTime @updatedAt @map("updated_at")
+
+  vendor   Vendor   @relation(fields: [vendorId], references: [id], onDelete: Cascade)
+  category Category @relation(fields: [categoryId], references: [id], onDelete: Restrict)
+
+  @@unique([vendorId, categoryId])
+  @@index([categoryId, rankValue(sort: Desc)], name: "idx_vendor_rank_category")
+  @@map("vendor_rank")
 }
 
 // ============================================
