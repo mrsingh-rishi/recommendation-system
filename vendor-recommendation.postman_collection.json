@@ -1,0 +1,342 @@
+{
+  "info": {
+    "name": "Vendor Recommendation API",
+    "description": "All endpoints for the Vendor Recommendation platform. Seed the DB first with `npm run seed` before testing.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    { "key": "baseUrl", "value": "http://localhost:3000" },
+    { "key": "vendorId", "value": "1" },
+    { "key": "documentId", "value": "1" },
+    { "key": "workRequirementId", "value": "4" },
+    { "key": "ratingId", "value": "1" }
+  ],
+  "item": [
+    {
+      "name": "Vendors",
+      "item": [
+        {
+          "name": "Get All Vendors",
+          "request": {
+            "method": "GET",
+            "url": { "raw": "{{baseUrl}}/api/vendors", "host": ["{{baseUrl}}"], "path": ["api", "vendors"] }
+          }
+        },
+        {
+          "name": "Get Vendor by ID",
+          "request": {
+            "method": "GET",
+            "url": { "raw": "{{baseUrl}}/api/vendors/{{vendorId}}", "host": ["{{baseUrl}}"], "path": ["api", "vendors", "{{vendorId}}"] }
+          }
+        },
+        {
+          "name": "Create Vendor",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "url": { "raw": "{{baseUrl}}/api/vendors", "host": ["{{baseUrl}}"], "path": ["api", "vendors"] },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"SkyBuild Contractors\",\n  \"vendorType\": \"Contractor\",\n  \"contactName\": \"Tariq Saleem\",\n  \"contactPhone\": \"+971509001234\",\n  \"contactEmail\": \"tariq@skybuild.ae\",\n  \"currentStatus\": \"active\"\n}"
+            }
+          }
+        },
+        {
+          "name": "Create Vendor — Validation Error (missing required fields)",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "url": { "raw": "{{baseUrl}}/api/vendors", "host": ["{{baseUrl}}"], "path": ["api", "vendors"] },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"contactEmail\": \"not-an-email\"\n}"
+            }
+          }
+        },
+        {
+          "name": "Update Vendor",
+          "request": {
+            "method": "PUT",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "url": { "raw": "{{baseUrl}}/api/vendors/{{vendorId}}", "host": ["{{baseUrl}}"], "path": ["api", "vendors", "{{vendorId}}"] },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"currentStatus\": \"inactive\",\n  \"contactPhone\": \"+971501111111\"\n}"
+            }
+          }
+        },
+        {
+          "name": "Delete Vendor",
+          "request": {
+            "method": "DELETE",
+            "url": { "raw": "{{baseUrl}}/api/vendors/{{vendorId}}", "host": ["{{baseUrl}}"], "path": ["api", "vendors", "{{vendorId}}"] }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Vendor Documents",
+      "item": [
+        {
+          "name": "Get All Vendor Documents",
+          "request": {
+            "method": "GET",
+            "url": { "raw": "{{baseUrl}}/api/vendor-documents", "host": ["{{baseUrl}}"], "path": ["api", "vendor-documents"] }
+          }
+        },
+        {
+          "name": "Get Vendor Document by ID",
+          "request": {
+            "method": "GET",
+            "url": { "raw": "{{baseUrl}}/api/vendor-documents/{{documentId}}", "host": ["{{baseUrl}}"], "path": ["api", "vendor-documents", "{{documentId}}"] }
+          }
+        },
+        {
+          "name": "Create Vendor Document",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "url": { "raw": "{{baseUrl}}/api/vendor-documents", "host": ["{{baseUrl}}"], "path": ["api", "vendor-documents"] },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"vendorId\": 2,\n  \"documentType\": \"agreement\",\n  \"documentUrl\": \"https://docs.example.com/2/agreement.pdf\",\n  \"issueDate\": \"2024-01-01\",\n  \"expiryDate\": \"2027-01-01\",\n  \"verificationStatus\": \"pending\"\n}"
+            }
+          }
+        },
+        {
+          "name": "Create Vendor Document — Validation Error (bad URL)",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "url": { "raw": "{{baseUrl}}/api/vendor-documents", "host": ["{{baseUrl}}"], "path": ["api", "vendor-documents"] },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"vendorId\": 2,\n  \"documentType\": \"agreement\",\n  \"documentUrl\": \"not-a-url\"\n}"
+            }
+          }
+        },
+        {
+          "name": "Update Vendor Document",
+          "request": {
+            "method": "PUT",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "url": { "raw": "{{baseUrl}}/api/vendor-documents/{{documentId}}", "host": ["{{baseUrl}}"], "path": ["api", "vendor-documents", "{{documentId}}"] },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"verificationStatus\": \"verified\",\n  \"verifiedBy\": 1\n}"
+            }
+          }
+        },
+        {
+          "name": "Delete Vendor Document",
+          "request": {
+            "method": "DELETE",
+            "url": { "raw": "{{baseUrl}}/api/vendor-documents/{{documentId}}", "host": ["{{baseUrl}}"], "path": ["api", "vendor-documents", "{{documentId}}"] }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Work Requirements",
+      "item": [
+        {
+          "name": "Get All Work Requirements",
+          "request": {
+            "method": "GET",
+            "url": { "raw": "{{baseUrl}}/api/work-requirements", "host": ["{{baseUrl}}"], "path": ["api", "work-requirements"] }
+          }
+        },
+        {
+          "name": "Get Work Requirement by ID",
+          "request": {
+            "method": "GET",
+            "url": { "raw": "{{baseUrl}}/api/work-requirements/{{workRequirementId}}", "host": ["{{baseUrl}}"], "path": ["api", "work-requirements", "{{workRequirementId}}"] }
+          }
+        },
+        {
+          "name": "Create Work Requirement",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "url": { "raw": "{{baseUrl}}/api/work-requirements", "host": ["{{baseUrl}}"], "path": ["api", "work-requirements"] },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"title\": \"Warehouse Electrical Wiring\",\n  \"categoryId\": 1,\n  \"location\": \"Dubai\",\n  \"estimatedValue\": 95000,\n  \"priority\": \"high\",\n  \"expectedStartDate\": \"2026-09-01\",\n  \"status\": \"open\",\n  \"createdBy\": 1\n}"
+            }
+          }
+        },
+        {
+          "name": "Create Work Requirement — Validation Error (missing createdBy)",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "url": { "raw": "{{baseUrl}}/api/work-requirements", "host": ["{{baseUrl}}"], "path": ["api", "work-requirements"] },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"title\": \"Incomplete Requirement\",\n  \"categoryId\": 1,\n  \"location\": \"Dubai\"\n}"
+            }
+          }
+        },
+        {
+          "name": "Update Work Requirement",
+          "request": {
+            "method": "PUT",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "url": { "raw": "{{baseUrl}}/api/work-requirements/{{workRequirementId}}", "host": ["{{baseUrl}}"], "path": ["api", "work-requirements", "{{workRequirementId}}"] },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"priority\": \"urgent\",\n  \"estimatedValue\": 160000,\n  \"status\": \"assigned\"\n}"
+            }
+          }
+        },
+        {
+          "name": "Delete Work Requirement",
+          "request": {
+            "method": "DELETE",
+            "url": { "raw": "{{baseUrl}}/api/work-requirements/{{workRequirementId}}", "host": ["{{baseUrl}}"], "path": ["api", "work-requirements", "{{workRequirementId}}"] }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Vendor Ratings",
+      "item": [
+        {
+          "name": "Get All Vendor Ratings",
+          "request": {
+            "method": "GET",
+            "url": { "raw": "{{baseUrl}}/api/vendor-ratings", "host": ["{{baseUrl}}"], "path": ["api", "vendor-ratings"] }
+          }
+        },
+        {
+          "name": "Create Rating — triggers rank recalculation",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "url": { "raw": "{{baseUrl}}/api/vendor-ratings", "host": ["{{baseUrl}}"], "path": ["api", "vendor-ratings"] },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"vendorId\": 7,\n  \"workRequirementId\": 1,\n  \"ratingValue\": 5,\n  \"ratedBy\": 1,\n  \"notes\": \"Excellent IT delivery, no issues\"\n}",
+              "options": { "raw": { "language": "json" } }
+            },
+            "description": "vendorId 7 = TechPro, workRequirementId 1 = closed Electrical req (use a closed WR that matches TechPro's category). After this, check VendorRank for TechPro is created."
+          }
+        },
+        {
+          "name": "Create Rating — Validation Error (ratingValue out of range)",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "url": { "raw": "{{baseUrl}}/api/vendor-ratings", "host": ["{{baseUrl}}"], "path": ["api", "vendor-ratings"] },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"vendorId\": 1,\n  \"workRequirementId\": 1,\n  \"ratingValue\": 10,\n  \"ratedBy\": 1\n}"
+            }
+          }
+        },
+        {
+          "name": "Create Rating — Conflict (duplicate vendor + workReq)",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "url": { "raw": "{{baseUrl}}/api/vendor-ratings", "host": ["{{baseUrl}}"], "path": ["api", "vendor-ratings"] },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"vendorId\": 1,\n  \"workRequirementId\": 1,\n  \"ratingValue\": 3,\n  \"ratedBy\": 1\n}"
+            },
+            "description": "Send twice — second request returns 409 Conflict."
+          }
+        },
+        {
+          "name": "Update Rating — triggers rank recalculation",
+          "request": {
+            "method": "PUT",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "url": { "raw": "{{baseUrl}}/api/vendor-ratings/{{ratingId}}", "host": ["{{baseUrl}}"], "path": ["api", "vendor-ratings", "{{ratingId}}"] },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"ratingValue\": 2,\n  \"notes\": \"Revised after final inspection — several defects found\"\n}"
+            }
+          }
+        },
+        {
+          "name": "Delete Rating — triggers rank recalculation",
+          "request": {
+            "method": "DELETE",
+            "url": { "raw": "{{baseUrl}}/api/vendor-ratings/{{ratingId}}", "host": ["{{baseUrl}}"], "path": ["api", "vendor-ratings", "{{ratingId}}"] }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Recommendations",
+      "item": [
+        {
+          "name": "Electrical in Dubai (Volta→PowerTech→MultiSkill)",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/api/recommendations?workRequirementId=4",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "recommendations"],
+              "query": [{ "key": "workRequirementId", "value": "4" }]
+            },
+            "description": "Expects vendors ranked: Volta (5.0) → PowerTech (4.0) → MultiSkill (3.0). Only vendors covering Dubai are returned."
+          }
+        },
+        {
+          "name": "HVAC in Dubai (CoolAir→MultiSkill)",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/api/recommendations?workRequirementId=6",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "recommendations"],
+              "query": [{ "key": "workRequirementId", "value": "6" }]
+            },
+            "description": "Expects: CoolAir (5.0) → MultiSkill (4.0)."
+          }
+        },
+        {
+          "name": "Plumbing in Abu Dhabi (PipeMasters→AquaFlow)",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/api/recommendations?workRequirementId=5",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "recommendations"],
+              "query": [{ "key": "workRequirementId", "value": "5" }]
+            },
+            "description": "Expects: PipeMasters (5.0) → AquaFlow (4.0)."
+          }
+        },
+        {
+          "name": "Electrical in Abu Dhabi (PowerTech only)",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/api/recommendations?workRequirementId=7",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "recommendations"],
+              "query": [{ "key": "workRequirementId", "value": "7" }]
+            },
+            "description": "Volta covers Dubai/Sharjah, MultiSkill covers Dubai only — so only PowerTech (Abu Dhabi) is returned."
+          }
+        },
+        {
+          "name": "IT Services in Dubai (TechPro — unranked)",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/api/recommendations?workRequirementId=8",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "recommendations"],
+              "query": [{ "key": "workRequirementId", "value": "8" }]
+            },
+            "description": "TechPro has no rank yet (no prior ratings). Still returned as the only eligible vendor."
+          }
+        }
+      ]
+    }
+  ]
+}

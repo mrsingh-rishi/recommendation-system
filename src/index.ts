@@ -4,6 +4,7 @@ import vendorRouter from "./routes/vendor.js";
 import vendorDocumentsRouter from "./routes/vendor-documents.js";
 import vendorRatingsRouter from "./routes/vendor-ratings.js";
 import workRequirementsRouter from "./routes/work-requirements.js";
+import recommendationsRouter from "./routes/recommendations.js";
 
 const app = express();
 
@@ -14,6 +15,7 @@ app.use("/api/vendors", vendorRouter);
 app.use("/api/vendor-documents", vendorDocumentsRouter);
 app.use("/api/vendor-ratings", vendorRatingsRouter);
 app.use("/api/work-requirements", workRequirementsRouter);
+app.use("/api/recommendations", recommendationsRouter);
 
 app.get("/", (_req, res) => {
   res.send("Hello, World!");
