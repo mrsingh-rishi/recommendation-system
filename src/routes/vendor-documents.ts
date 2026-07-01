@@ -1,22 +1,21 @@
-import router from 'express';
-import vendorRatingsRouter from './vendor-ratings.js';
+import { Router } from 'express';
 
-const vendorDocumentsRouter = router.Router();
+const vendorDocumentsRouter = Router();
 
-vendorDocumentsRouter.get('/vendor-documents', (req, res) => {
+vendorDocumentsRouter.get('/', (req, res) => {
   res.send('Vendor Documents route');
 });
 
-vendorRatingsRouter.post('/vendor-ratings', (req, res) => {
-  res.send('Vendor Rating created');
+vendorDocumentsRouter.post('/', (req, res) => {
+  res.send('Vendor Document created');
 });
 
-vendorRatingsRouter.put('/vendor-ratings/:id', (req, res) => {
-  res.send(`Vendor Rating with ID ${req.params.id} updated`);
+vendorDocumentsRouter.put('/:id', (req, res) => {
+  res.send(`Vendor Document with ID ${req.params.id} updated`);
 });
 
-vendorRatingsRouter.delete('/vendor-ratings/:id', (req, res) => {
-  res.send(`Vendor Rating with ID ${req.params.id} deleted`);
+vendorDocumentsRouter.delete('/:id', (req, res) => {
+  res.send(`Vendor Document with ID ${req.params.id} deleted`);
 });
 
 export default vendorDocumentsRouter;

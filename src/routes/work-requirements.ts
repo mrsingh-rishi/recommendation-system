@@ -1,20 +1,20 @@
-import router from 'express';
+import { Router } from 'express';
 
-const workRequirementsRouter = router.Router();
+const workRequirementsRouter = Router();
 
-workRequirementsRouter.get('/work-requirements', (req, res) => {
+workRequirementsRouter.get('/', (req, res) => {
   res.send('Work Requirements route');
 });
 
-workRequirementsRouter.post('/work-requirements', (req, res) => {
+workRequirementsRouter.post('/', (req, res) => {
   res.send('Work Requirement created');
 });
 
-workRequirementsRouter.put('/work-requirements/:id', (req, res) => {
+workRequirementsRouter.put('/:id', (req, res) => {
   res.send(`Work Requirement with ID ${req.params.id} updated`);
 });
 
-workRequirementsRouter.delete('/work-requirements/:id', (req, res) => {
+workRequirementsRouter.delete('/:id', (req, res) => {
   res.send(`Work Requirement with ID ${req.params.id} deleted`);
 });
 
