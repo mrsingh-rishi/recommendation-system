@@ -1,13 +1,191 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
-// Get a free hosted Postgres database in seconds: `npx create-db`
-
 generator client {
-  provider = "prisma-client"
-  output   = "../generated/prisma"
+  provider = "prisma-client-js"
 }
 
 datasource db {
   provider = "postgresql"
+}
+
+// ============================================
+// Enums
+// ============================================
+enum VendorStatus {
+  active
+  inactive
+  blacklisted
+  pending_verification
+}
+
+enum DocumentType {
+  tax_registration
+  insurance
+  trade_license
+  safety_certificate
+  agreement
+}
+
+enum VerificationStatus {
+  pending
+  verified
+  rejected
+}
+
+enum PriorityLevel {
+  low
+  medium
+  high
+  urgent
+}
+
+enum WorkRequirementStatus {
+  draft
+  open
+  assigned
+  closed
+}
+
+// ============================================
+// Reference data
+// ============================================
+model Category {
+  id    Int    @id @default(autoincrement())
+  name  String @unique @db.VarChar(100)
+
+  vendorCategories  VendorCategory[]
+  workRequirements  WorkRequirement[]
+
+  @@map("category")
+}
+
+// ============================================
+// Vendor
+// ============================================
+model Vendor {
+  id             Int          @id @default(autoincrement())
+  name           String       @db.VarChar(255)
+  vendorType     String       @map("vendor_type") @db.VarChar(100)
+  contactName    String?      @map("contact_name") @db.VarChar(255)
+  contactPhone   String?      @map("contact_phone") @db.VarChar(20)
+  contactEmail   String?      @map("contact_email") @db.VarChar(255)
+  currentStatus  VendorStatus @default(pending_verification) @map("current_status")
+  createdAt      DateTime     @default(now()) @map("created_at")
+  updatedAt      DateTime     @updatedAt @map("updated_at")
+
+  categories  VendorCategory[]
+  locations   VendorLocation[]
+  documents   VendorDocument[]
+  ratings     VendorRating[]
+  recommendations Recommendation[]
+
+  @@map("vendor")
+}
+
+// ============================================
+// Vendor <-> Category (many-to-many, admin-curated)
+// ============================================
+model VendorCategory {
+  vendorId   Int      @map("vendor_id")
+  categoryId Int      @map("category_id")
+  addedBy    Int      @map("added_by")
+  addedAt    DateTime @default(now()) @map("added_at")
+
+  vendor   Vendor   @relation(fields: [vendorId], references: [id], onDelete: Cascade)
+  category Category @relation(fields: [categoryId], references: [id], onDelete: Restrict)
+
+  @@id([vendorId, categoryId])
+  @@map("vendor_category")
+}
+
+// ============================================
+// Vendor locations (one row per location)
+// ============================================
+model VendorLocation {
+  id       Int    @id @default(autoincrement())
+  vendorId Int    @map("vendor_id")
+  location String @db.VarChar(255)
+
+  vendor Vendor @relation(fields: [vendorId], references: [id], onDelete: Cascade)
+
+  @@unique([vendorId, location])
+  @@map("vendor_location")
+}
+
+// ============================================
+// Vendor documents
+// ============================================
+model VendorDocument {
+  id                  Int                 @id @default(autoincrement())
+  vendorId            Int                 @map("vendor_id")
+  documentType        DocumentType        @map("document_type")
+  documentUrl         String              @map("document_url")
+  issueDate           DateTime?           @map("issue_date") @db.Date
+  expiryDate          DateTime?           @map("expiry_date") @db.Date
+  verificationStatus  VerificationStatus  @default(pending) @map("verification_status")
+  verifiedBy          Int?                @map("verified_by")
+  uploadedAt          DateTime            @default(now()) @map("uploaded_at")
+
+  vendor Vendor @relation(fields: [vendorId], references: [id], onDelete: Cascade)
+
+  @@index([vendorId, verificationStatus, expiryDate], name: "idx_vendor_document_eligibility")
+  @@map("vendor_document")
+}
+
+// ============================================
+// Work Requirement
+// ============================================
+model WorkRequirement {
+  id                 Int                    @id @default(autoincrement())
+  title              String                 @db.VarChar(255)
+  categoryId         Int                    @map("category_id")
+  location           String                 @db.VarChar(255)
+  estimatedValue     Decimal                @map("estimated_value") @db.Decimal(14, 2)
+  priority           PriorityLevel          @default(medium)
+  expectedStartDate  DateTime?              @map("expected_start_date") @db.Date
+  status             WorkRequirementStatus  @default(draft)
+  createdBy          Int                    @map("created_by")
+  createdAt          DateTime               @default(now()) @map("created_at")
+
+  category        Category         @relation(fields: [categoryId], references: [id], onDelete: Restrict)
+  ratings         VendorRating[]
+  recommendations Recommendation[]
+
+  @@map("work_requirement")
+}
+
+// ============================================
+// Vendor Ratings
+// ============================================
+model VendorRating {
+  id                 Int      @id @default(autoincrement())
+  vendorId           Int      @map("vendor_id")
+  workRequirementId  Int      @map("work_requirement_id")
+  ratingValue        Int      @map("rating_value") @db.SmallInt
+  ratedBy            Int      @map("rated_by")
+  notes              String?
+  createdAt          DateTime @default(now()) @map("created_at")
+
+  vendor          Vendor          @relation(fields: [vendorId], references: [id], onDelete: Cascade)
+  workRequirement WorkRequirement @relation(fields: [workRequirementId], references: [id], onDelete: Restrict)
+
+  @@unique([vendorId, workRequirementId])
+  @@index([vendorId])
+  @@map("vendor_rating")
+}
+
+// ============================================
+// Recommendation (persisted output, for audit)
+// ============================================
+model Recommendation {
+  id                  Int      @id @default(autoincrement())
+  workRequirementId   Int      @map("work_requirement_id")
+  vendorId            Int      @map("vendor_id")
+  rankAtTimeOfRec     Int?     @map("rank_at_time_of_rec")
+  wasSelected         Boolean? @map("was_selected")
+  generatedAt         DateTime @default(now()) @map("generated_at")
+
+  workRequirement WorkRequirement @relation(fields: [workRequirementId], references: [id], onDelete: Cascade)
+  vendor          Vendor          @relation(fields: [vendorId], references: [id], onDelete: Restrict)
+
+  @@index([workRequirementId])
+  @@map("recommendation")
 }
