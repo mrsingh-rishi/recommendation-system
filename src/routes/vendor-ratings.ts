@@ -1,21 +1,16 @@
 import { Router } from 'express';
+import {
+  getAllVendorRatings,
+  createVendorRating,
+  updateVendorRating,
+  deleteVendorRating,
+} from '../services/vendor-ratings.js';
 
 const vendorRatingsRouter = Router();
 
-vendorRatingsRouter.get('/', (req, res) => {
-  res.send('Vendor Ratings route');
-});
-
-vendorRatingsRouter.post('/', (req, res) => {
-  res.send('Vendor Rating created');
-});
-
-vendorRatingsRouter.put('/:id', (req, res) => {
-  res.send(`Vendor Rating with ID ${req.params.id} updated`);
-});
-    
-vendorRatingsRouter.delete('/:id', (req, res) => {
-  res.send(`Vendor Rating with ID ${req.params.id} deleted`);
-});
+vendorRatingsRouter.get('/', getAllVendorRatings);
+vendorRatingsRouter.post('/', createVendorRating);
+vendorRatingsRouter.put('/:id', updateVendorRating);
+vendorRatingsRouter.delete('/:id', deleteVendorRating);
 
 export default vendorRatingsRouter;

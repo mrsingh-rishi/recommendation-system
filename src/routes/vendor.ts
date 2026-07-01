@@ -1,21 +1,16 @@
 import { Router } from 'express';
+import { createVendor, deleteVendor, getAllVendors, getVendorById, updateVendor } from '../services/vendor.js';
 
 const vendorRouter = Router();
 
-vendorRouter.get('/', (req, res) => {
-  res.send('Vendor route');
-});
+vendorRouter.get('/', getAllVendors);
 
-vendorRouter.post('/', (req, res) => {
-  res.send('Vendor created');
-});
+vendorRouter.get('/:id', getVendorById);
 
-vendorRouter.put('/:id', (req, res) => {
-  res.send(`Vendor with ID ${req.params.id} updated`);
-});
+vendorRouter.post('/', createVendor);
 
-vendorRouter.delete('/:id', (req, res) => {
-  res.send(`Vendor with ID ${req.params.id} deleted`);
-});
+vendorRouter.put('/:id', updateVendor);
+
+vendorRouter.delete('/:id', deleteVendor);
 
 export default vendorRouter;

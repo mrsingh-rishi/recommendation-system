@@ -1,21 +1,19 @@
 import { Router } from 'express';
 
+import {
+  getAllWorkRequirements,
+  getWorkRequirementById,
+  createWorkRequirement,
+  updateWorkRequirement,
+  deleteWorkRequirement,
+} from '../services/work-requirements.js';
+
 const workRequirementsRouter = Router();
 
-workRequirementsRouter.get('/', (req, res) => {
-  res.send('Work Requirements route');
-});
-
-workRequirementsRouter.post('/', (req, res) => {
-  res.send('Work Requirement created');
-});
-
-workRequirementsRouter.put('/:id', (req, res) => {
-  res.send(`Work Requirement with ID ${req.params.id} updated`);
-});
-
-workRequirementsRouter.delete('/:id', (req, res) => {
-  res.send(`Work Requirement with ID ${req.params.id} deleted`);
-});
+workRequirementsRouter.get('/', getAllWorkRequirements);
+workRequirementsRouter.get('/:id', getWorkRequirementById);
+workRequirementsRouter.post('/', createWorkRequirement);
+workRequirementsRouter.put('/:id', updateWorkRequirement);
+workRequirementsRouter.delete('/:id', deleteWorkRequirement);
 
 export default workRequirementsRouter;
